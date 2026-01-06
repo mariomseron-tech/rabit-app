@@ -1,2 +1,2 @@
-# lipo-app
-Lip Digital App
+# rabit-app
+Rabit Digital App
