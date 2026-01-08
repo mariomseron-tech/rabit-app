@@ -1,5 +1,4 @@
-import assert from "node:assert/strict";
-import { describe, it } from "node:test";
+import { describe, expect, it } from "vitest";
 import { createRabitStore } from "../src/state/useRabitStore";
 import { DataPoint, StepWindow } from "../src/types/fit";
 
@@ -32,10 +31,7 @@ describe("Rabit store selectors", () => {
     ]);
 
     const lastMinute = store.selectors.lastMinuteRaw(now);
-    assert.deepStrictEqual(
-      lastMinute.map((point) => point.value),
-      [0.3, 0.4]
-    );
+    expect(lastMinute.map((point) => point.value)).toEqual([0.3, 0.4]);
   });
 
   it("returns only last 60 seconds for normalized data", () => {
@@ -48,10 +44,7 @@ describe("Rabit store selectors", () => {
     ]);
 
     const lastMinute = store.selectors.lastMinuteNormalized(now);
-    assert.deepStrictEqual(
-      lastMinute.map((point) => point.value),
-      [2, 3]
-    );
+    expect(lastMinute.map((point) => point.value)).toEqual([2, 3]);
   });
 
   it("returns only last 60 seconds for detected windows using window end time", () => {
@@ -65,10 +58,7 @@ describe("Rabit store selectors", () => {
     ]);
 
     const lastMinute = store.selectors.lastMinuteWindows(now);
-    assert.deepStrictEqual(
-      lastMinute.map((window) => window.steps),
-      [14, 20]
-    );
+    expect(lastMinute.map((window) => window.steps)).toEqual([14, 20]);
   });
 
   it("returns flag snapshot", () => {
@@ -76,12 +66,12 @@ describe("Rabit store selectors", () => {
     store.actions.setFlags({ isCollecting: true, hasEnoughData: true });
 
     const flags = store.selectors.flags();
-    assert.deepStrictEqual(flags, {
+    expect(flags).toEqual({
       isCollecting: true,
       hasEnoughData: true,
     });
 
     const nextFlags = store.selectors.flags();
-    assert.notStrictEqual(flags, nextFlags);
+    expect(flags).not.toBe(nextFlags);
   });
 });

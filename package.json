@@ -2,6 +2,7 @@
   "name": "rabit-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,13 +10,17 @@
     "lint": "next lint",
     "test": "vitest",
     "test:watch": "vitest watch",
+    "typecheck": "tsc --noEmit",
     "lint-staged": "lint-staged",
     "prepare": "husky install"
   },
   "dependencies": {
+    "fit-file-parser": "^1.9.0",
     "next": "14.2.5",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "recharts": "^2.9.0",
+    "zustand": "^4.5.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "6.4.2",
@@ -45,36 +50,5 @@
     "*.{json,md,mdx,css,scss}": [
       "prettier --check"
     ]
-  "version": "1.0.0",
-  "description": "Rabit Digital App",
-  "main": "index.js",
-  "scripts": {
-    "build": "tsc --project tsconfig.json",
-    "test": "npm run build && node --test dist/tests/**/*.test.js"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs"
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "lint": "eslint . --ext .ts,.tsx",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "fit-file-parser": "^1.9.0",
-    "react": "^18.2.0",
-    "recharts": "^2.9.0",
-    "zustand": "^4.5.0"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^7.9.0",
-    "@typescript-eslint/parser": "^7.9.0",
-    "eslint": "^9.0.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.29.1",
-    "typescript": "^5.4.0"
   }
 }

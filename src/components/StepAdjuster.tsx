@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useMemo, useState } from "react";
 import { StepDefinition } from "../metrics/computeMetrics";
 import { updateStepOverride } from "../store/stepOverrides";

@@ -24,6 +24,15 @@ const pattern: RabitPatternStep[] = [
 ];
 
 describe("RabitAnalyzer active island detection", () => {
+  it("smooths speeds using the configured SMA window", () => {
+    const points = buildSegment(0, 4, (offset) => offset * 2, constant(100));
+    const analyzer = new RabitAnalyzer({ smoothingWindowSec: 2 });
+
+    const smoothed = analyzer.smoothSpeeds(points);
+
+    expect(smoothed).toEqual([0, 1, 2, 4, 6]);
+  });
+
   it("splits islands when rest exceeds 30 seconds", () => {
     const active1 = buildSegment(0, 60, constant(5), constant(120));
     const rest = buildSegment(61, 40, constant(1.5), constant(90));
@@ -111,5 +120,26 @@ describe("RabitAnalyzer pattern matching and metrics", () => {
     expect(step3Metrics.heartRateStdev).toBeCloseTo(0, 5);
     expect(step3Metrics.onsetAccelerationKmhPerSec).toBeCloseTo(0.2, 2);
     expect(step3Metrics.unstablePacing).toBe(false);
+  });
+
+  it("flags unstable pacing when speed variance is high", () => {
+    const step = buildSegment(
+      0,
+      60,
+      (offset) => (offset % 2 === 0 ? 8 : 16),
+      constant(120)
+    );
+
+    const analyzer = new RabitAnalyzer({
+      pattern: [{ name: "Step 1", durationSec: 60 }],
+    });
+
+    const result = analyzer.analyze(step);
+
+    if (result.status === "failure") {
+      throw new Error(result.reason);
+    }
+
+    expect(result.steps[0].metrics.unstablePacing).toBe(true);
   });
 });

@@ -1,11 +1,13 @@
 import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { StepAdjuster } from "../StepAdjuster";
 import { StepDefinition } from "../../metrics/computeMetrics";
 import * as stepOverrides from "../../store/stepOverrides";
 
 afterEach(() => {
-  jest.restoreAllMocks();
+  vi.restoreAllMocks();
 });
 
 const steps: StepDefinition[] = [
@@ -16,7 +18,7 @@ const steps: StepDefinition[] = [
 
 describe("StepAdjuster", () => {
   it("clamps values to bounds and shows validation", () => {
-    const updateSpy = jest.spyOn(stepOverrides, "updateStepOverride");
+    const updateSpy = vi.spyOn(stepOverrides, "updateStepOverride");
 
     render(<StepAdjuster steps={steps} minGap={1} />);
 
@@ -32,7 +34,7 @@ describe("StepAdjuster", () => {
   });
 
   it("prevents overlap between neighboring steps", () => {
-    const updateSpy = jest.spyOn(stepOverrides, "updateStepOverride");
+    const updateSpy = vi.spyOn(stepOverrides, "updateStepOverride");
 
     render(<StepAdjuster steps={steps} minGap={1} />);
 
@@ -45,5 +47,32 @@ describe("StepAdjuster", () => {
       "Value must be at least 3."
     );
     expect(updateSpy).toHaveBeenCalledWith("beta", 3, steps);
+  });
+
+  it("clamps values to the max bound for the last step", () => {
+    const updateSpy = vi.spyOn(stepOverrides, "updateStepOverride");
+
+    render(<StepAdjuster steps={steps} minGap={1} />);
+
+    const gammaSlider = screen.getByLabelText(
+      "Gamma: 9"
+    ) as HTMLInputElement;
+
+    fireEvent.change(gammaSlider, { target: { value: "15" } });
+
+    expect(gammaSlider.value).toBe("10");
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      "Value must be at most 10."
+    );
+    expect(updateSpy).toHaveBeenCalledWith("gamma", 10, steps);
+  });
+
+  it("supports keyboard focus on sliders", async () => {
+    const user = userEvent.setup();
+    render(<StepAdjuster steps={steps} minGap={1} />);
+
+    await user.tab();
+
+    expect(screen.getByLabelText("Alpha: 2")).toHaveFocus();
   });
 });
