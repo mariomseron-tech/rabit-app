@@ -9,3 +9,5 @@ coverage
 .env.test.local
 .env.production.local
 /.husky/_/
+node_modules
+dist
