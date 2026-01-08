@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
+import { fitFixtureBuffer } from "../../../tests/fixtures/fitFixture";
 
 import Page from "../page";
 
@@ -30,7 +31,7 @@ class FileReaderMock {
   onerror: ((this: FileReaderMock, ev: ProgressEvent<FileReader>) => void) | null = null;
 
   readAsArrayBuffer() {
-    this.result = new ArrayBuffer(8);
+    this.result = fitFixtureBuffer.slice(0);
     if (this.onload) {
       this.onload.call(this, new ProgressEvent("load"));
     }
@@ -39,12 +40,16 @@ class FileReaderMock {
 
 describe("Upload page", () => {
   beforeEach(() => {
-    parseFitFileMock.mockResolvedValue({ raw: new ArrayBuffer(8) });
-    analyzeMock.mockResolvedValue({ summary: "Analysis complete", totalBytes: 8 });
+    parseFitFileMock.mockResolvedValue({ raw: fitFixtureBuffer.slice(0) });
+    analyzeMock.mockResolvedValue({
+      summary: "Analysis complete",
+      totalBytes: fitFixtureBuffer.byteLength,
+    });
     pushMock.mockClear();
     parseFitFileMock.mockClear();
     analyzeMock.mockClear();
     vi.stubGlobal("FileReader", FileReaderMock);
+    sessionStorage.clear();
   });
 
   afterEach(() => {
@@ -65,5 +70,17 @@ describe("Upload page", () => {
       expect(analyzeMock).toHaveBeenCalled();
       expect(pushMock).toHaveBeenCalledWith("/dashboard");
     });
+
+    const stored = sessionStorage.getItem("rabit-dashboard-data");
+    expect(stored).not.toBeNull();
+    if (stored) {
+      const payload = JSON.parse(stored) as {
+        parsed: { raw: ArrayBuffer };
+        analysis: { summary: string; totalBytes: number };
+        fileName: string;
+      };
+      expect(payload.fileName).toBe("ride.fit");
+      expect(payload.analysis.totalBytes).toBe(fitFixtureBuffer.byteLength);
+    }
   });
 });

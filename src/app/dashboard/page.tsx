@@ -29,18 +29,30 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-slate-50 px-6 py-10">
       <div className="mx-auto flex max-w-6xl flex-col gap-8">
         <header>
-          <p className="text-sm font-semibold uppercase tracking-wide text-sky-600">Rabit Dashboard</p>
-          <h1 className="mt-2 text-3xl font-bold text-slate-900">Training Intensity Overview</h1>
+          <p className="text-sm font-semibold uppercase tracking-wide text-sky-600">
+            Rabit Dashboard
+          </p>
+          <h1 className="mt-2 text-3xl font-bold text-slate-900">
+            Training Intensity Overview
+          </h1>
           <p className="mt-2 text-base text-slate-500">
-            Consolidated view of threshold markers, session performance, and interval guidance.
+            Consolidated view of threshold markers, session performance, and
+            interval guidance.
           </p>
         </header>
 
         <section className="grid gap-4 md:grid-cols-4">
           {metrics.map((metric) => (
-            <div key={metric.label} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-sm font-medium text-slate-500">{metric.label}</p>
-              <p className="mt-2 text-2xl font-semibold text-slate-900">{metric.value}</p>
+            <div
+              key={metric.label}
+              className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+            >
+              <p className="text-sm font-medium text-slate-500">
+                {metric.label}
+              </p>
+              <p className="mt-2 text-2xl font-semibold text-slate-900">
+                {metric.value}
+              </p>
               <p className="mt-1 text-xs text-slate-400">{metric.context}</p>
             </div>
           ))}
@@ -56,58 +68,5 @@ export default function DashboardPage() {
         </section>
       </div>
     </div>
-"use client";
-
-import Link from "next/link";
-import { useEffect, useState } from "react";
-
-type DashboardData = {
-  fileName?: string;
-  analysis?: {
-    summary?: string;
-    totalBytes?: number;
-  };
-};
-
-export default function DashboardPage() {
-  const [data, setData] = useState<DashboardData | null>(null);
-
-  useEffect(() => {
-    const stored = sessionStorage.getItem("rabit-dashboard-data");
-    if (stored) {
-      try {
-        setData(JSON.parse(stored) as DashboardData);
-      } catch {
-        setData(null);
-      }
-    }
-  }, []);
-
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-6">
-      <section className="max-w-xl text-center">
-        <h1 className="text-3xl font-semibold">Rabit Dashboard</h1>
-        <p className="mt-2 text-sm text-slate-600">
-          {data?.fileName ? `Analyzed: ${data.fileName}` : "No analysis available."}
-        </p>
-      </section>
-
-      {data?.analysis ? (
-        <div className="w-full max-w-lg rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-medium">Summary</h2>
-          <p className="mt-2 text-sm text-slate-700">{data.analysis.summary}</p>
-          <p className="mt-2 text-xs text-slate-500">
-            Total bytes: {data.analysis.totalBytes}
-          </p>
-        </div>
-      ) : (
-        <div className="text-sm text-slate-600">
-          <p>Upload a FIT file to see your analysis.</p>
-          <Link className="mt-2 inline-flex text-sm text-blue-600 underline" href="/">
-            Go to upload
-          </Link>
-        </div>
-      )}
-    </main>
   );
 }
