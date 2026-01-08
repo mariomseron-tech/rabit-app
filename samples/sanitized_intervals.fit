@@ -1,0 +1,7 @@
+FIT_SAMPLE_TYPE: INTERVALS
+NOTE: This is a sanitized, text-only placeholder for a FIT fixture.
+FIELDS: timestamp, distance_m, speed_mps, cadence_spm, heart_rate_bpm
+SAMPLE_ROWS:
+2024-01-01T00:10:00Z,0,3.50,170,150
+2024-01-01T00:10:01Z,3.50,3.60,172,151
+2024-01-01T00:10:02Z,7.10,2.90,158,148

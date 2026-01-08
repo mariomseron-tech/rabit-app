@@ -1,0 +1,7 @@
+FIT_SAMPLE_TYPE: EASY_RUN
+NOTE: This is a sanitized, text-only placeholder for a FIT fixture.
+FIELDS: timestamp, distance_m, speed_mps, cadence_spm, heart_rate_bpm
+SAMPLE_ROWS:
+2024-01-01T00:00:00Z,0,2.78,160,145
+2024-01-01T00:00:01Z,2.78,2.80,161,145
+2024-01-01T00:00:02Z,5.58,2.81,161,146
